@@ -1,0 +1,90 @@
+public class Speller {
+    public static void main(String[] args) {
+	String[] words = {
+	"able","there","about","above","add","after","again","against","ago","all","almost","along",
+	"already","also","although","am","america","among","an","and","animal","another","answer",
+	"anything","are","area","around","as","at","away","back","ball","be","beautiful","became","because",
+	"become","been","it","before","began","beginning","behind","being","below","best","better","between","bill",
+	"birds","black","blue","boat","body","tried","book","both","bottom","box","boy","bring","brought","build",
+	"building","built","but","by","call","came","can","across","cannot","car","care","carefully","carried",
+	"carry","center","certain","change","check","children","city","class","close","cold","come","coming",
+	"common","complete","could","country","course","cut","dark","day","deep","did","different","distance","do",
+	"does","dog","doing","don't","done","down","draw","dry","during","each","early","earth","easy","eat",
+	"either","else","end","enough","even","ever","every","everyone","everything","example","heavy",
+	"eye","face","fact","fall","family","far","fast","father","feel","feet","taken","felt","few","field","finally","find",
+	"fine","fire","first","fish","five","floor","follow","food","foot","whether","for",
+	"form","found","four","friend","from","front","full","game","gave","get","getting","girl","give","given",
+	"glass","go","goes","gold","gone","you","good","got","great","green","ground","group",
+	"grow","had","half","hand","happened","hard","has","have","having","he","heard","heart",
+	"held","help","her","here","high","him","himself","his","hold","home","horse","hot",
+	"house","how","however","hundred","i","ice","idea","if","important","in","indian","inside",
+	"instead","into","is","its","itself","job","john","just","keep","kept","kind","sky",
+	"knew","know","known","land","language","large","last","later","lay","learn","least","leave",
+	"left","letter","life","light","like","line","list","little","live","living","long","longer",
+	"look","low","made","main","make","making","man","many","map","matter","may","me","mean","means",
+	"men","might","mind","miss","money","moon","more","morning","most","mother","mountain",
+	"move","moving","mr","mrs","music","must","my","name","near","needed","never","new","next","night",
+	"no","not","nothing","notice","air","now","number","of","off","old","on","once","which",
+	"one","only","open","or","order","other","our","out","hour","outside","over","own","page","paper","part",
+	"parts","past","pattern","people","perhaps","person","picture","piece","place","plant","play",
+	"point","poor","possible","power","probably","problem","put","question","quickly","quite","rain",
+	"ran","read","ready","real","red","remember","rest","right","river","road","rock","room","round","run",
+	"said","same","sat","saw","say","school","scientist","sea","second","see","seen","sentence","several",
+	"shall","she","ship","short","should","show","shown","simple","since","six","size",
+	"slide","slowly","small","snow","so","some","someone","something","sometime","soon","sound","space",
+	"special","stand","start","state","States","stay","still","stood","stop","stopped","story","strong","such",
+	"suddenly","summer","sun","sure","surface","system","table","take","talk","tall","tell","ten","than",
+	"that","the","them","themselves","then","door","these","they","any","thing","think","third",
+	"this","those","though","thought","three","through","time","tiny","to","today","together","told","too","took",
+	"top","toward","town","tree","try","turn","two","under","united","until",
+	"up","upon","us","use","using","usually","very","voice","walk","want","warm","was","watch","water","way",
+	"we","let","weather","well","went","were","what","when","where",
+	"while","white","who","whole","why","wide","wild","will","wind","winter","with","within","without","word",
+	"work","world","would","write","writing","written","year","yes","yet","young"};
+
+	// <YOUR CODE GOES HERE> (any of your methods must go on this file also)
+	sorter(words);
+	String[] list = sorter(words);
+	for(int i = 0; i < words.length; i ++){
+	    System.out.println(words[i]);
+	}
+	System.out.println(words[i]);
+	for(int i = 0; i < list.length; i ++){
+	    System.out.println(list[i]);
+	}
+    }
+    
+    /*public static void bubbleSort(int[] integers){
+	boolean swapped = true;
+	for (int i = integers.length - 1; i > 0 && swapped; i--){
+	    swapped = false;  
+	    for (int j = 0; j <= i - 1; j++){ 
+		if (integers[j] > integers[j + 1]){
+		    swapNumbers(integers, j, j + 1);
+		    swapped = true;
+		}
+	    }
+	}
+    }*/
+    
+    public static void swapLetters(String[] letters, int i, int j){
+	String placeHolder = "";
+	placeHolder = letters[i];
+	letters[i] = letters[j];
+	letters[j] = placeHolder;  
+    }
+    
+    public static String[] sorter(String[] list){
+	String[] newList = new String[20];
+	int count = 0;
+	for(int i = 0; i < list.length - 1; i++){
+	    if(list[i].compareTo(list[i + 1]) > 0){
+		newList[count] = list[i]ist[i];
+		for(int j = i - 1; j >= 0 + count; j--){
+		    swapLetters(list, j, j + 1);
+		 }
+	}
+	System.out.println("Sorted list starts at position:" + count);
+	return newList;
+    }  
+}
