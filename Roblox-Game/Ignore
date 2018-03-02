@@ -1,0 +1,20 @@
+local tool = script.Parent
+local handle = tool.Handle
+local player = game.Players.LocalPlayer
+local character = player.Character
+local mouse = player:getMouse()
+local torso = character:waitForChild("Torso")
+local neck = torso:waitForChild("Neck")
+local leftArm = character:waitForChild("Left Arm")
+local rightArm = character:waitForChild("Right Arm")
+local leftShoulder = torso:waitForChild("Left Shoulder")
+local rightShoulder = torso:waitForChild("Right Shoulder")
+tool.Equipped:Connect(function()
+	mouse.TargetFilter = workspace
+	game:GetService("RunService").RenderStepped:Connect(function()
+		neck.C1 = CFrame.new()
+		leftShoulder.C1 = CFrame.new()
+	    rightShoulder.C1 = CFrame.new()
+		neck.C0 = CFrame.new(0, 1.5, 0) * CFrame.Angles(math.asin((mouse.Hit.p - mouse.Origin.p).unit.y), -math.asin((mouse.Hit.p - mouse.Origin.p).unit.x), 0) --CFrame.new(leftArm.Position, mouse.hit.p)
+	end)
+end)
