@@ -1,0 +1,79 @@
+----//This script makes the arms visible in FP\\--
+--//Variables\\--
+wait()
+local Player = game.Players.LocalPlayer
+local Character = Player.Character or Player.CharacterAdded:wait()
+local Humanoid = Character:WaitForChild("Humanoid")
+--//Cloned Arms\\--
+local Arms = Instance.new("Model", workspace)
+local NewHumanoid = Instance.new("Humanoid", Arms)
+local Shirt = Instance.new("Shirt", Arms)
+local Head = Instance.new("Part", Arms)
+Head.Size = Vector3.new(0.05, 0.05, 0.05)
+Head.Name = "Head"
+Head.Anchored = true
+Head.Transparency = 1
+local mouse = Player:GetMouse()
+Head.CanCollide = false
+NewHumanoid.RigType = Humanoid.RigType
+Shirt.ShirtTemplate = Character:WaitForChild("Shirt").ShirtTemplate
+Arms.Name = " "
+--//End of Cloned arms\\--
+local ArmNames = {"UpperTorso",
+				  "LeftUpperArm",
+				  "LeftLowerArm",
+				  "LeftHand",
+				  "RightUpperArm",
+				  "RightLowerArm" ,
+			   	  "RightHand",
+				  "LeftUpperLeg",
+				  "LeftLowerLeg",
+				  "LeftFoot",
+				  "RightUpperLeg",
+				  "RightLowerLeg",
+				  "RightFoot",}
+ 
+--//Functions\\--
+local function Show(Part)
+    for i, ArmName in pairs(ArmNames) do
+        if Part.Name == ArmName then
+            local Clone = Part:Clone()
+            Clone:ClearAllChildren()
+            local Weld = Instance.new("Weld")
+            Weld.Part0 = Part
+            Weld.Part1 = Clone
+            local CJ = CFrame.new(Part.Position)
+            local C0 = Part.CFrame:inverse() * CJ
+            local C1 = Clone.CFrame:inverse() * CJ
+            Weld.C0 = C0
+            Weld.C1 = C1
+            Weld.Parent = Part
+            Clone.Parent = Arms
+            Clone.CanCollide = true
+            Part.Transparency = 1
+            if (Humanoid.RigType == Enum.HumanoidRigType.R6) then
+                for i, Object in pairs(Character:GetChildern()) do
+                	if (Object.className == "CharacterMesh") then
+                        	local ClonedMesh = Object:Clone()
+                        	ClonedMesh.Parent = Arms
+                    end
+                end
+            end
+        end
+    end
+end
+ 
+local function Loop()
+    for i, Object in pairs(Character:GetChildren()) do
+        Show(Object)
+    end
+end
+ 
+--//Events\\--
+Humanoid.Died:connect(function()
+    Arms:Destroy()
+    Player.CharacterAdded:wait()
+    Loop()
+end)
+ 
+Loop()
