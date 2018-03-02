@@ -1,0 +1,213 @@
+--[[counter = 0
+for i = 1, 4096 do
+	local part = Instance.new("Part")
+	part.Anchored = true
+	part.Size = Vector3.new(1,1,1)
+	part.Parent = workspace
+	part.Color = Color3.fromRGB(4 * counter,0,4*(i - 1 - counter * 64))
+	part.Position = Vector3.new(counter,0,i - counter * 64)
+	part.Name = ""..i
+	if i % 64 == 0 then
+		counter = counter + 1
+	end 
+	print(part.Name)
+	wait()
+end ]]
+
+
+function generateSquare(length, size, heightFromGround, axis1, axis2)
+	local counter = 0
+	if size == nil then
+		size = 1
+	end
+	if length == nil then
+		length = 16
+	end
+	if heightFromGround == nil then
+		heightFromGround = 1
+	end
+	if axis1 == nil then
+		axis1 = "blue"
+	end
+	if axis2 == nil then 
+		axis2 = "green"
+	end
+	for i = 1, length ^ 2 do
+		local part = Instance.new("Part", workspace)
+		part.Anchored = true
+		part.TopSurface = "SmoothNoOutlines"
+		part.Size = Vector3.new(size,size,size)
+		local color1 = counter * math.floor(256/length)
+		local color2 =  (i - 1 - counter  *  length) * math.floor(256/length) 
+		if axis1 == "blue" then
+			if axis2 == "red" then
+				part.Color = Color3.fromRGB(color2, 0, color1)	
+			elseif axis2 == "green" then 
+				part.Color = Color3.fromRGB(0, color2, color1)		
+			end
+		elseif axis1 == "red" then
+			if axis2 == "green" then
+				part.Color = Color3.fromRGB(color1, color2, 0)
+			elseif axis2 == "blue" then
+				part.Color = Color3.fromRGB(color1, 0, color2)	
+			end
+		elseif axis1 == "green" then
+			if axis2 == "blue" then
+				part.Color = Color3.fromRGB(0, color1, color2)	
+			elseif axis2 == "red" then
+				part.Color = Color3.fromRGB(color2, color1, 0)			
+			end
+		end
+		part.Position = Vector3.new(counter * size, heightFromGround, (i - counter * length) * size)
+		if i % length == 0 then
+			counter = counter + 1
+		end
+	end
+	wait(0.001)
+end
+
+function generateColorCube(length,size,heightFromGround)
+	local widthCounter = 0
+	local heightCounter = 0
+	if size == nil then
+		size = 1
+	end
+	if length == nil then
+		length = 16
+	end
+	if heightFromGround == nil then
+		heightFromGround = 1
+	end
+	for i = 1, length ^ 3 do
+		local part = Instance.new("Part", workspace)
+		part.Anchored = true
+		part.TopSurface = "SmoothNoOutlines"
+		part.BottomSurface = "SmoothNoOutlines"
+		part.BackSurface = "SmoothNoOutlines"
+		part.FrontSurface = "SmoothNoOutlines"
+		part.LeftSurface = "SmoothNoOutlines"
+		part.RightSurface = "SmoothNoOutlines"
+		part.Size = Vector3.new(size,size,size)
+		part.Material = "SmoothPlastic"
+		part.Reflectance = 0
+		part.Transparency = 0
+		part.Color = Color3.fromRGB((widthCounter - heightCounter * length) * math.floor(256/length),
+									 heightCounter * math.floor(256/length),
+									(i - 1 - widthCounter * length) * math.floor(256/length))
+		part.Position = Vector3.new((widthCounter - heightCounter * length) * size,
+									 heightFromGround + heightCounter * size,
+									(i - widthCounter * length) * size)
+		if i % length == 0 then
+			widthCounter = widthCounter + 1
+		end
+		if i % length ^ 2 == 0 then
+			heightCounter = heightCounter + 1
+		end
+	end 
+	wait(0.001)
+end 
+
+function createSphere(name,size,locationX, locationY, locationZ)
+	local part = Instance.new("Part", workspace)
+	part.Shape = "Ball"
+	part.Anchored = false
+	part.Name = name
+	part.Transparency = 0
+	part.Color = Color3.fromRGB(0,0,0)
+	part.Size = Vector3.new(size,size,size)
+	part.Position = Vector3.new(locationX, locationY, locationZ)
+	return part
+end
+
+--[[(String Calibre), (int Damage), float Velocity,(calibre, type)
+    (String Type), float Drag Coefficient, (boolean Spinning),
+    (float Spinning Speed), float mass]]
+ 
+
+
+
+
+function fireBullet(bullet, numberOfBullets, bulletVelocity, rateOfFire)
+	for i = 1, numberOfBullets do 
+
+
+	end
+end
+
+function bulletVelocity(bullet, velocity)
+	local BodyForce = Instance.new("BodyForce", bullet)
+	bullet.BodyForce.force = Vector3.new(0, gravitationalAcceleration, 0) * bullet:GetMass()
+	bullet.CanCollide = false		
+end
+
+function bulletDamage(bullet)
+	
+end
+
+function bulletSpin(spinVelocity)
+	
+end
+--[[Create a bullet class and put all of the bullet functions into the class]]
+--generateSquare()
+--generateColorCube()
+--[[Make bullets transparent if they are moving, if they are moving faster than make them more transparent.
+	]] 
+
+local bulletCalibers = {"9mm", "10mm"}
+local shellCalibers = {}	
+local shotTypes = {"Bullet", "Shell", "Laser", "Flame", "Electric",
+				   "Plasma", "Radiatation", "Gamma Ray", "Acid",
+				   "Wave", "Freezer", "Gravity", "Rocket/Missle",
+				   "Grenade", "Mine Bomb", "Liquid", "Star","Gas", 
+				   "Junk", "Biohazard", "Healing Injection",
+				   "Arrow", "Pulse", "Nuclear", "Antimatter", 
+				   "Force Field", "Mini Vehicle", "Flare", "Flash", 
+				   "Sound Wave", "Grapple", "Creature Egg", "Energy", 
+				   "Drill Shot", "Sharp Object", "Electromagnet", 
+				   "Confetti", "Large Object", "Glass", "Coin", 
+				   "Valuable Objects", "EMP", "BB", "Rocks", 
+				   "Blackhole", "Portal", "Whitehole", "Wormhole",
+				   "Railgun round", "Smoke", "Poop", "Garbage",
+				   "Air Pressure", "Vaccum", "Balls", "Blood",
+				   "Body Parts", "Ballooning", "Random(For F-U2 Gun"}
+ 
+local bulletSpecialties = {"Normal", "Tracer", "Incindiery", "Explosive", "HP","AP", 
+						   "FMJ", "SCS", "Tracker", "Shocker", "Fatigue", "Infected",
+						   "Stun Shot", "Bleeder","Smoker", "Poison", "Cluster", "Flak",
+						   "Buckshot","Slug","Flechette", "Frag", "Tranquilizer"}
+
+--ring
+
+local shellSpecialties = {"Tracer","HE", "HEI", "AP", "Cannister Shot", "Sabot", "APDS",
+						  "APFSDS", "API", "APCR", "APCNR", "HEAT", "Flak", "Shrapnel",
+						  "Non-Explosive", "Tracker", "Chemical", "Laser Guided", "Staff",
+						  "HESH", "HEDP", "Flare", "Smoke", "Cluster", "Mine Shell", "Double Jump Shell"}  
+
+local laserSpecialties = {"Beam", "Shot", "Incindiery Laser", "High Denisty Beam", "Gatling Beam",
+						  "Gatling Shot", "High Velocity", "High Density", "Instantaneous Velocity",
+						  "Flash", "Homing Beam", "Heat Seaking Shot", "Drill Beam", "Cutting Beam",
+						  "Infinity Beam", "Longfire Beam", "Beam Color", "Megawatts", "Shock Beam",
+						  "Large Shot", "Large Beam", "Charged Shot", "Charged Beam", "Brightness",
+						  "Light", "Photons", "Optics", "Laser Blade", "Multibeam", "Shotgun Laser"}
+
+local electricSpecialties = {"Lightning", "Lightning Ball", "Lightning Laser", "Charged Lighning Ball",
+							 "Lightning Color", "Charged Lightning Beam", "Lightning Gatling Gun",
+							 "Lightning Power", "Sparks", "Postive", "Negative", "Electric", "Tesla",
+							 "Jolt", "Static", "Illumintation", "Luminouscity", "Current", "Volts",
+							 "Amps", "Charge", "Shocks", "Electrifying", "Energetic", "Electrons",
+							 "Protons", "Neutrons", "Ohm", "Chain Lightning", "Stun", "Shotgun Lightning", 
+							 "Electrolaser", "Electron Beam", "Lightning Blade", "Benjamin Franklin",
+							 "Chidori", "Lightning Storm", "Homing Lightning", "Multilieghtning", 
+							 "Branch Lightning(branches off like a tree)", "Cluster Lightning", "Arc gun",
+							 "High Current Lightning", "High Voltage Lightning", "Conductivity", "Resistance",
+							 "Destructive Lightning Gun", "Zues"} --gun which causes a lightning storm when fired into the sky -lightning pinpointed strike from above
+
+local flameSpecialties = {"Fire Ball", "Flamethrower", "Heat", "Lava", "Magma", "Pyro"}
+
+local fightMoves = {"Punches", "Kicks", "Throws", "Holds", "Knee Strikes",
+				    "Elbow Strikes", "Chops", "Palm Strikes", "Tackles",
+				    "Takedowns", "Finishes", "Blocks", "Dodges", "Headbutts",
+					"Running Attacks", "Twists", "Joint Snaps", "Pushes",
+					"Chokeholds", "Finger Strikes", "Pins", "Jump Attacks",
+					"Air Attacks", "Flips", "Ground Moves", "Acrobatic Moves"}
+--Slot Machine Tokens, Token gun
