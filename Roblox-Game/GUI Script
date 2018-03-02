@@ -1,0 +1,63 @@
+repeat
+	wait()
+until game.Players.LocalPlayer.PlayerGui["Ammo GUI"]["Ammo Indicator"] and game.Players.LocalPlayer.PlayerGui["Ammo GUI"]["Reserve Ammo Indicator"]
+
+local player = game.Players.LocalPlayer
+local gun = script.Parent.Parent
+local settings = gun.Settings
+local ammo = settings.Ammo
+local clipsize = settings["Clip Size"]
+local reserveAmmo = settings["Reserve Ammo"]
+local maxAmmo = reserveAmmo.Value
+local ammoIndicator = player.PlayerGui["Ammo GUI"]["Ammo Indicator"]
+local reserveAmmoIndicator = player.PlayerGui["Ammo GUI"]["Reserve Ammo Indicator"]
+local timer = 0
+local debounce = true
+local isBlinking = false
+ammoIndicator.Visible = false
+reserveAmmoIndicator.Visible = false
+
+local function update() 
+	if (ammo.Value <= clipsize.Value / 3) then
+		ammoIndicator.TextColor3 = Color3.new(1, 0, 0)
+		isBlinking = true
+		while (isBlinking) do
+			timer = timer + 0.01
+			if ((timer % 2) < 1) then
+				ammoIndicator.TextTransparency = 1 - (timer % 2)
+			else 
+				ammoIndicator.TextTransparency = (timer % 2) - 1
+			end
+			ammoIndicator.Text = ammo.Value
+			wait()	
+		end
+		timer = 0
+	else
+		isBlinking = false
+		ammoIndicator.TextColor3 = Color3.new(1, 1, 1)
+		ammoIndicator.TextTransparency = 0
+	end 
+	if (reserveAmmo.value / maxAmmo >= 0.5) then
+		reserveAmmoIndicator.TextColor3 = Color3.new((1 - reserveAmmo.value / maxAmmo) * 2, 1, 0)
+	else
+		reserveAmmoIndicator.TextColor3 = Color3.new(1, (reserveAmmo.value / maxAmmo) * 2, 0)
+	end
+	ammoIndicator.Text = ammo.Value
+	reserveAmmoIndicator.Text = "               |"..reserveAmmo.Value
+end
+
+
+gun.Activated:Connect(update)
+ammo.Changed:Connect(update)
+reserveAmmo.Changed:Connect(update)
+
+gun.Equipped:Connect(function()
+	ammoIndicator.Visible = true
+	reserveAmmoIndicator.Visible = true
+	update()
+end)
+
+gun.Unequipped:Connect(function()
+	ammoIndicator.Visible = false
+	reserveAmmoIndicator.Visible = false
+end)
