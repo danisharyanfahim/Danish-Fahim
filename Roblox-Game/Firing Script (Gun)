@@ -1,0 +1,168 @@
+----------------------------------------------------------------------Variables---------------------------------------------------------------------
+
+local gun = script.Parent.Parent
+local list = gun:GetChildren()
+local previousPart = nil
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+local base = gun.Barrel
+local _9mm = game.ServerStorage.Bullets["9mm Bullet"].Bullet
+local fullMagazineReplacement = false --[[If you want the magazine to subtract an entire 
+										  clip of ammo from your max ammo despite having
+  										  remaining bulles in the magazine.]]
+local frontFlash = gun.Flash["Front Flash"]
+local rearFlash = gun.Flash["Rear Flash"]
+local flashLight = gun.Flash["Flash Light"]
+local secondFrontFlash = gun.Flash["Second Front Flash"]
+local secondRearFlash = gun.Flash["Second Rear Flash"]
+local humanoid = player.Character.Humanoid
+local leftClickDown = false
+local rightClickDown = false
+local reloading = false
+local debounce = true
+local handle = gun.Handle
+local flashing = false;
+
+---------------------------------------------------------------------Information--------------------------------------------------------------------
+
+local information = gun.Information
+local fireCaliber = information["Bullet Caliber"]
+local shotType = information["Shot Type"]
+local weaponName = information["Weapon Name"]
+local weaponType = information["Weapon Type"]
+local fireType = information["Fire Type"]
+
+-----------------------------------------------------------------------Sounds-----------------------------------------------------------------------
+
+local fireSound = gun.Sounds["Fire Sound"]
+local reloadSound = gun.Sounds["Reload Sound"]
+local equipsound = nil
+local emptySound = nil
+local cockSound = nil
+
+---------------------------------------------------------------------Animations---------------------------------------------------------------------
+
+repeat
+	wait()
+until humanoid
+
+--[[local animationFolder = gun:WaitForChild("Animations")
+local idleAnimation = humanoid:LoadAnimation(animationFolder:WaitForChild("Idle Animation"))
+local reloadAnimation = humanoid:LoadAnimation(animationFolder:WaitForChild("Reload Animation"))
+local unequipAnimation = humanoid:LoadAnimation(animationFolder:WaitForChild("Unequip Animation"))
+local standingAnimation = humanoid:LoadAnimation(animationFolder:WaitForChild("Standing Animation"))]]
+
+----------------------------------------------------------------------Settings----------------------------------------------------------------------
+
+local settings = gun.Settings
+local ammo = settings.Ammo
+local clipSize = settings["Clip Size"]
+local fireRate = settings["Fire Rate"]
+local reserveAmmo = settings["Reserve Ammo"]
+local maxDammage = settings["Max Damage"]
+local maxRange = settings["Max Range"]
+local minDamage = settings["Min Damage"]
+local reloadTime = settings["Reload Time"]
+local bulletVelocity = settings["Bullet Velocity"]
+local bulletDiscardTime = settings["Bullet Discard Time"]
+local cockTime = settings["Cock Time"]
+
+----------------------------------------------------------------------Constants---------------------------------------------------------------------
+
+local meterToStudConstant = 2.85		  --[[Divide the average human hieght (1.75 meters) by 5 (Robloxian Hieght).]]		  
+local gravitationalAcceleration = 168.2   --[[196.2(Roblox standar gravitiational acceleration) - 
+											  2.85 x 9.81(earth gravitational accelration) = 168.2]]
+
+--------------------------------------------------------------------Declarations--------------------------------------------------------------------
+
+frontFlash.Transparency = 1
+rearFlash.Transparency = 1
+flashLight.Brightness = 10
+flashLight.Enabled = false
+secondFrontFlash.Transparency = 1
+secondRearFlash.Transparency = 1
+ammo.Value = clipSize.Value
+--idleAnimation.Looped = true
+--standingAnimation.Looped = true
+
+-------------------------------------------------------------------Weld Function--------------------------------------------------------------------
+
+list = gun:GetChildren()
+
+for i = 1, #list do
+	if (list[i].ClassName == "Part") or
+	   (list[i].ClassName == "WedgePart") or
+	   (list[i].ClassName == "CornerWedgePart") or
+	   (list[i].ClassName == "UnionOperation") or
+	   (list[i].ClassName == "BlockMesh") or
+	   (list[i].ClassName == "CylinderMesh") or 
+	   (list[i].ClassName == "SpecialMesh") then
+		if (previousPart ~= nil) then
+			local weld = Instance.new("Weld")
+			weld.Part0 = previousPart
+			weld.Part1 = list[i]
+			weld.C0 = previousPart.CFrame:inverse()
+			weld.C1 = list[i].CFrame:inverse()
+			weld.Parent = previousPart
+		end
+		previousPart = list[i]
+	end 
+end
+
+------------------------------------------------------------------Reloading Function-----------------------------------------------------------------
+
+function reload()
+	if (reserveAmmo.Value > 0) then
+		if (not reloading) then
+			if (ammo.Value ~= clipSize.Value) then
+				rightClickDown = false					
+				reloading = true
+				--reloadAnimation:Play()
+				reloadSound:Play()
+				wait(reloadTime.Value)
+				if (reserveAmmo.Value - clipSize.Value >= 0) then
+					if (fullMagazineReplacement) then
+						reserveAmmo.Value = reserveAmmo.Value - clipSize.Value
+					else
+						reserveAmmo.Value = reserveAmmo.Value - (clipSize.Value - ammo.Value)	
+					end
+					ammo.Value = clipSize.Value
+				else
+					if (ammo.Value + reserveAmmo.Value > clipSize.Value) then
+						if (fullMagazineReplacement) then
+							if (reserveAmmo.Value - clipSize.Value >= 0) then
+								reserveAmmo.Value = reserveAmmo.Value - clipSize.Value
+								ammo.Value = clipSize.Value	
+							else
+								ammo.Value = reserveAmmo.Value
+								reserveAmmo.Value = 0
+							end 	
+						else
+							reserveAmmo.Value = reserveAmmo.Value - (clipSize.Value - ammo.Value)
+							ammo.Value = clipSize.Value	
+						end
+					else
+						ammo.Value = ammo.Value + reserveAmmo.Value
+						reserveAmmo.Value = 0
+					end
+				end
+				reloading = false
+			else
+				print("Clip Full")
+			end
+			--reloadAnimation:Stop()
+		end
+	else
+		print("No Ammo Left")
+	end
+end
+
+-------------------------------------------------------------------Firing Functions------------------------------------------------------------------
+
+local function createBullet(originalBullet, locationX, locationY, locationZ)
+	local bullet = originalBullet:clone()
+	bullet.Parent = workspace
+	bullet.Anchored = false
+	bullet.Position = Vector3.new(locationX, locationY, locationZ)
+	return bullet
+end
