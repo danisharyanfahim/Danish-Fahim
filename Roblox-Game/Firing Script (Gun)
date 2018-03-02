@@ -166,3 +166,168 @@ local function createBullet(originalBullet, locationX, locationY, locationZ)
 	bullet.Position = Vector3.new(locationX, locationY, locationZ)
 	return bullet
 end
+
+local function fireBulletOnce(bullet, bulletVelocity)--[=[Bullet Velocity should be in meters per second,
+    								   		   		  calibre should be directly related to mass, velocity 
+     												  and the drag coefficient. Damage can be related, but
+     												  should be adjustable depending on the gun. The type
+     												  of bullet and the spinning speed should be independent.
+     												  The damage and velocity are dependent on the the spin.]=]
+	local lookVector = base.CFrame.lookVector
+	local basePosition = base.Position
+	local newBullet = createBullet(bullet, 
+					 			   basePosition.X, 
+					 			   basePosition.Y, 
+					 			   basePosition.Z)
+	local BodyForce = Instance.new("BodyForce", newBullet)
+	newBullet.BodyForce.force = Vector3.new(0, gravitationalAcceleration, 0) * newBullet:GetMass()
+	newBullet.CanCollide = false
+	newBullet.Orientation = base.Orientation
+	newBullet.Velocity = Vector3.new(lookVector.X * bulletVelocity * meterToStudConstant,
+						      		 lookVector.Y * bulletVelocity * meterToStudConstant, 
+							  		 lookVector.Z * bulletVelocity * meterToStudConstant)
+
+	newBullet.CanCollide = true
+end
+
+local function findObject(objectName, objectClass)
+	local list = game.Workspace:GetChildren()
+	local currentObject = nil
+	local objectFound = nil
+	for i = 1, #list do
+		currentObject = list[i]
+		if currentObject.ClassName == objectClass and currentObject.Name == objectName then
+			objectFound = currentObject
+		end 
+	end
+	return objectFound
+end
+
+local function getbulletHit(bullet, hit)
+	bullet:Destroy()
+	return hit.Name
+end
+
+local function getTravelDistance(bullet, hit)
+	local distanceTravelled = (base.Position - hit.Position).magnitude / meterToStudConstant
+	return distanceTravelled
+end
+
+local function getbulletDamage(distanceTravelled)
+	local damage = 0;
+	if distanceTravelled <= 10 then
+		damage = 24
+	elseif distanceTravelled <= 50 then
+		damage = 0.215 * distanceTravelled + 26.15
+	else
+		damage = 15.4
+	end
+	return damage  
+end
+
+local function takesDamage(damage, hit)
+	local humanoid
+	if (hit.Parent) then
+		humanoid = hit.Parent:findFirstChild("Humanoid")
+	end
+	if humanoid then
+		humanoid.Health = humanoid.Health - damage
+		return (humanoid.Health)
+	end
+end
+
+local function getFinalVelocity(bullet)
+	return (bullet.Velocity.magnitude / meterToStudConstant)
+end
+
+local function rapidFire(bullet, timesFired, fireRate, bulletVelocity)
+	for i = 1, timesFired do
+		fireBulletOnce(bullet, bulletVelocity)
+		local bullet = findObject("Bullet", "UnionOperation")
+		bullet.Touched:connect(function(hit)
+			getFinalVelocity(bullet)
+			getbulletHit(bullet, hit)
+			local damage = getbulletDamage(getTravelDistance(bullet, hit))
+			takesDamage(damage, hit)
+		end)
+		wait(60/(fireRate))
+	end
+end
+
+local function Shoot(bullet, bulletVelocity)
+	fireBulletOnce(bullet, bulletVelocity)
+	ammo.Value = ammo.Value - 1	
+	fireSound:Play()
+	local bullet = findObject("Bullet", "UnionOperation")
+	bullet.Touched:connect(function(hit)
+		if hit.Name ~= "Barrel" then
+			local damage = getbulletDamage(getTravelDistance(bullet, hit))
+			takesDamage(damage, hit)
+			bullet:Destroy()
+		end
+	end)
+end
+
+-------------------------------------------------------------------Flashing Function------------------------------------------------------------------
+
+local function flash()
+	if (not flashLight.Enabled) then
+		frontFlash.Transparency = 0
+		rearFlash.Transparency = 0
+		flashLight.Enabled = true
+		wait(60/(fireRate.Value)/2)	
+		frontFlash.Transparency = 1
+		rearFlash.Transparency = 1		
+		secondFrontFlash.Transparency = 0
+		secondRearFlash.Transparency = 0.25
+		flashLight.Enabled = false
+	end
+	wait(60/(fireRate.Value)/2)
+	secondFrontFlash.Transparency = 1
+	secondRearFlash.Transparency = 1
+end
+
+-------------------------------------------------------------------Activate Function------------------------------------------------------------------
+
+gun.Equipped:Connect(function()
+	--standingAnimation:Stop()
+	--idleAnimation:Play()
+	mouse.Button1Up:Connect(function()
+		leftClickDown = false
+	end)
+	
+	gun.Activated:Connect(function()
+		leftClickDown = true
+		if (not reloading) then
+			if (ammo.Value > 0) then
+				repeat
+					if (debounce) then
+						debounce = false
+						flash()
+						Shoot(_9mm, bulletVelocity.Value)
+						debounce = true
+					else
+						break;
+					end	
+				until (leftClickDown == false) or (ammo.Value <= 0)
+			else
+				print("Press R to reload")
+			end 
+		end
+		mouse.keyDown:connect(function(key)
+			if (key == "r") then
+				reload()	
+			end
+		end)
+	end)
+end)
+
+gun.Unequipped:Connect(function()
+	--unequipAnimation:Play()
+	leftClickDown = false
+	--idleAnimation:Stop()
+	wait(0.3)
+	--unequipAnimation:Stop()
+	--print(humanoid:GetPlayingAnimationTracks())
+	--standingAnimation:Play()
+end)
