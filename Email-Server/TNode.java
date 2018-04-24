@@ -4,6 +4,7 @@ public class TNode{
     private TNode left = null;
     private TNode right = null;
     private TNode parent = null;
+    private int height = 0;
     
     public TNode(){
 	identification = "";
@@ -11,6 +12,7 @@ public class TNode{
 	left = null;
 	right = null;
 	parent = null;
+	height = 0;
     }
     
     public TNode(String i, int n, TNode l, TNode r, TNode p){
@@ -41,6 +43,10 @@ public class TNode{
 	return parent;
     }
     
+    public int getHeight(){
+	return height;
+    }
+    
     public void setIdentification(String id){
 	identification = id;
     }
@@ -61,12 +67,22 @@ public class TNode{
 	parent = p;
     }
     
+    public void setHeight(int h){
+	height = h;
+    }
+    
+    public void delete(){
+	left = null;
+	right = null;
+	parent = null;
+    }
+    
     public String toString(){
 	if (this == null){
-	    return "null";
+	    return "Empty Tree";
 	}
 	else{
-	    return "Id: " + identification + " Record number: " + recordNumber;
+	    return "Id: " + identification + " Record number: " + recordNumber + " Height: " + height;
 	}
     }
 }

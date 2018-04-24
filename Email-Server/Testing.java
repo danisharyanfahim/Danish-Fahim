@@ -26,8 +26,8 @@ public class Testing{
 	list.deleteNode(a);
 	System.out.println("\n" + list);*/
 
-	Globals.availableList = new AvailableList();
-	Message message = new Message();
+	//Globals.availableList = new AvailableList();
+	//Message message = new Message();
 	/*int error = FileIO.openMessagesFile(Globals.MESSAGES_FILE);
 	if(error == Globals.PROCESS_OKAY){
 	    message.setText("Hello how are you today?asdddddddddddddddddddddddddddddddddddddddddddddddddddsafffffdfssadffffffffffffffffffffffffffffffffffffdsdsfsdfaaddddddddddddddddddddsadsfdsfdsfsdffds");
@@ -46,6 +46,6 @@ public class Testing{
 	} */
 	
 	
-	System.out.println(Utils.longToBytesStr(Utils.bytesStrToLong("CATALYST")));
+	//System.out.println(Utils.longToBytesStr(Utils.bytesStrToLong("CATALYST")));
     }
 }

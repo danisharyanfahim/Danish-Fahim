@@ -46,5 +46,9 @@ public class Globals{
     public static final char IN_BOX =                'I';
     public static final char OUT_BOX =               'O';
     public static final char SERVER_SHUTDOWN =       'Q';
+    public static Tree senderIndex = null;
+    public static Tree receiverIndex = null;
+    public static final int SENDER_ID = 0;
+    public static final int RECEIVER_ID = 1;
     //Dec 10 was the birthdate of Ada Lovelace and Mr.Mario
 }

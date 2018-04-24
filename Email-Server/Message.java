@@ -26,7 +26,7 @@ public class Message{
     
     public void setMessage(String s){
 	command = s.charAt(Globals.COMMAND_POS);
-	sender = s.substring(Globals.SENDER_POS, Globals.DATE_TIME_POS);
+	sender = s.substring(Globals.SENDER_POS, Globals.RECEIVER_POS);
 	receiver = s.substring(Globals.RECEIVER_POS, Globals.DATE_TIME_POS);
 	dateTime = s.substring(Globals.DATE_TIME_POS, Globals.FIRST_RECORD_MARKER_POS);
 	marker = s.charAt(Globals.FIRST_RECORD_MARKER_POS);
@@ -103,6 +103,14 @@ public class Message{
 	return sender + receiver + dateTime;
     }
     
+    public String getSenderFirst(){
+	return sender + receiver + dateTime;
+    }
+    
+    public String getReceiverFirst(){
+	return receiver + sender + dateTime;
+    }
+    
     public void readFromMessagesFile(int recordNumber){
 	String data = Globals.STR_NULL;
 	Record record = new Record();
@@ -116,9 +124,11 @@ public class Message{
     
     public int writeToMessagesFile(){
 	String s = text;
-	int startRecordNumber = -1;
 	int recordNumber = -1;
 	int nextRecordNumber = -1;
+	int startRecordNumber = Globals.availableList.getHead() == null ?
+				Globals.totalRecordsInMessagesFile :
+				Globals.availableList.getHead().getRecordNumber();                                        ;
 	
 	if (Globals.availableList.getHead() == null){
 	    startRecordNumber = Globals.totalRecordsInMessagesFile;

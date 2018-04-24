@@ -1,8 +1,19 @@
 import java.io.*;
+import java.util.Date.*; 
 public class EmailServer{
     public static void main(String args[]) {
 	int error = Init.initializeSystem();
 	if(error == Globals.PROCESS_OKAY){
+	    Message message = new Message();
+	    int recordNumber = 0;
+	    
+	    String identification = Globals.STR_NULL;
+	    identification = "JBOND0007SUZIECUTE00000000";
+	    Globals.senderIndex.printTree();
+	    recordNumber = Globals.senderIndex.findNode(identification).getRecordNumber();
+	    message.readFromMessagesFile(recordNumber);
+	    
+	    System.out.println(message);
 	    FileIO.closeMessagesFile();
 	}
 	else{
@@ -17,7 +28,7 @@ public class EmailServer{
 	System.out.println(record.getData());*/
 	
 	//int error = FileIO.openMessagesFile(Globals.MESSAGES_FILE);
-	if (error == Globals.PROCESS_OKAY){
+	/*if (error == Globals.PROCESS_OKAY){
 	    Record record = new Record("Dear Susan, how are you today? I am going to try to write you more frequently ab", 2);
 	    record.writeToMessagesFile(0, Globals.APPEND);
 	    record = new Record("Hi Johnny, do you want to go to the movies tonight? I have free passes. Suzie   ", -1);
@@ -48,6 +59,6 @@ public class EmailServer{
 	}
 	else{
 	    System.out.println("Error opening messages file");
-	}
+	}*/
     }
 }
