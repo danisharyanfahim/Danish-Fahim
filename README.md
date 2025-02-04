@@ -1,7 +1,7 @@
 # 2025 Update
 These are the first projects I started my programming journey back in 2014. It's been over 10 years since then, and I have learned a variety of languages.  The first language I learned was Turing. The first project I made was a plane game in Turing, which was my final-year project for my grade 9 CS class. Afterwards, the language I mainly used was Java, and I have been using it for almost 10 years now. This is what you will find in this folder:
--My First Project (2015)
--Java Programs and Tutorials I wrote for my CS classes between 2016 to 2018, including an email server (Grade 12, final year project)
+- My First Project (2015)
+- Java Programs and Tutorials I wrote for my CS classes between 2016 to 2018, including an email server (Grade 12, final year project)
 
 
 ## Danish-Fahim (Originally Written in 2018)
